@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>three.js webgl - geometry - text</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+                <style>
+                        body {
+                                font-family: Monospace;
+                                background-color: #000;
+                                color: #fff;
+                                margin: 0px;
+                                overflow: hidden;
+                        }
+ 		</style>
+	</head>
+	<body onload="window.resizeTo(400,100)">
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/three.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/GeometryUtils.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/ConvolutionShader.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/CopyShader.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/FilmShader.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/FXAAShader.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/EffectComposer.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/RenderPass.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/ShaderPass.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/MaskPass.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/BloomPass.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/FilmPass.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/Detector.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/stats.js"></script>
+		<!-- load the font files -->
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/gentilis_bold.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/gentilis_regular.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/optimer_bold.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/optimer_regular.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/helvetiker_bold.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/helvetiker_regular.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/droid_sans_regular.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/droid_sans_bold.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/droid_serif_regular.js"></script>
+		<script src="three.js%20webgl%20-%20geometry%20-%20text_files/droid_serif_bold.js"></script>
+		<!-- todo async loader for fonts -->
+		<script>
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			var container, stats, permalink, hex, color;
+			var camera, cameraTarget, scene, renderer;
+			var composer;
+			var effectFXAA;
+			var group, textMesh1, textMesh2, textGeo01, textGeo02, textGeo03, textGeo04, textGeo05, textGeo06, textGeo07,  material, matno, matdt, matjj, matnn, matin, matvbz, matto, matvb, matwrb, matprp, matvbd, matrb, matvbn  ;
+			var firstLetter = true;
+			var text01 = " ";
+			var text01001 = "A";
+			var colo01001 = "nn";
+			var text01002 = "radical";
+			var colo01002 = "nn";
+			var text01003 = "idea";
+			var colo01003 = "nn";
+			var text01004 = "that";
+			var colo01004 = "nn";
+			var text01005 = "fails";
+			var colo01005 = "nn";
+			var text01006 = "to";
+			var colo01006 = "nn";
+			var text01007 = "resonate";
+			var colo01007 = "nn";
+			var text01008 = "in";
+			var colo01008 = "nn";
+			var text01009 = "the";
+			var colo01009 = "nn";
+			var text01010 = "culture";
+			var colo01010 = "nn";
+			var text01011 = "where";
+			var colo01011 = "nn";
+			var text01012 = "it";
+			var colo01012 = "nn";
+			var text01013 = "originated";
+			var colo01013 = "nn";
+			var text01014 = "fades";
+			var colo01014 = "nn";
+			var text01015 = "quickly.";
+			var colo01015 = "nn";
+			var text01016 = "away,";
+			var colo01016 = "nn";
+			var text01017 = "it";
+			var colo01017 = "nn";
+			var text01018 = "is";
+			var colo01018 = "nn";
+			var text01019 = "soon";
+			var colo01019 = "nn";
+			var text01020 = "forgotten";
+			var colo01020 = "nn";
+			var text01021 = ".";
+			var colo01021 = "nn";
+
+			var text02 = "A radical idea that captures the imaginations of the people will flourish and grow.";
+			var col01 = "nn";
+			var text03 = "One radical idea, perhaps the most important new concept to appear in the world of its time, caught the fever of the people.";
+			var col01 = "nn";
+			var text04 = "This idea, born 2600 years ago among Ionian Greeks on the coast of present day turkey, spread like a wildfire across the Greek world to Italy.";
+			var col01 = "nn";
+			var text05 = "It laid the groundwork for the culture that developed Jet planes, Atomic Bombs, Democracy, and a rational God.";
+			var col01 = "nn";
+			var text06 = "This is the radical idea that the world is a rational place and man, the rational animal, could understand it.";
+			var col01 = "nn";
+			var text07 = "So we begin our story in the Greek settlements along the Ionian coast.";
+			var col01 = "nn";
+
+			var mirror = false;
+			var fontMap = {
+				"helvetiker": 0,
+				"optimer": 1,
+				"gentilis": 2,
+				"droid sans": 3,
+				"droid serif": 4
+			};
+
+			var weightMap = {
+				"normal": 0,
+				"bold": 1
+			};
+
+			var reverseFontMap = {};
+			var reverseWeightMap = {};
+			for ( var i in fontMap ) reverseFontMap[ fontMap[i] ] = i;
+			for ( var i in weightMap ) reverseWeightMap[ weightMap[i] ] = i;
+			var targetRotation = 0;
+			var targetRotationOnMouseDown = 0;
+			var mouseX = 0;
+			var mouseXOnMouseDown = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			var postprocessing = { enabled : false };
+			var glow = 0 ;
+			var poseup = 1;
+			var linum = 1;
+			var spacex = 100;
+			var wposi = -1000;
+			var shi = 5;
+			init();
+			animate();
+
+			function init() {
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				// CAMERA
+				camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 40000 );
+				camera.position.set( 0, 0, -1000 );
+				camera.rotation.set( 0.0, -0.3, 0 );
+				// SCENE
+				scene = new THREE.Scene();
+				// LIGHTS
+				var pointLight2 = new THREE.PointLight( 0xffffff, 2, 3000);
+				pointLight2.position.set( 0, -100, 0 );
+				scene.add( pointLight2 );				
+				
+				
+				var pointLight3 = new THREE.PointLight( 0xffffff, 2, 3000);
+				pointLight2.position.set( 0, -100, -1000 );
+				scene.add( pointLight2 );
+
+// Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - Materials - 
+
+				matno = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xAAAAAA, color: 0x888888, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matdt = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF00FF, color: 0xFF88FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x440044, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matjj = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFFFF03, color: 0xFFFF44, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x444400, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matnn = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0x888888, color: 0x4444FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x000044, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matin = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0x888888, color: 0xFFFF88, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matvbz = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matto = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matvb = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0x888888, color: 0x44AA44, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x004400, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matwrb = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matprp = new THREE.MeshFaceMaterial( [                   
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matvbd = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+
+				matrb = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+				
+				
+				matvbn = new THREE.MeshFaceMaterial( [
+					new THREE.MeshPhongMaterial( { ambient: 0xFF03FF, color: 0x8888FF, specular: 0xFFFFFF, shininess: shi, shading: THREE.FlatShading } ), // front
+					new THREE.MeshPhongMaterial( { color: 0x0000ff, shading: THREE.SmoothShading } ) // side
+				] );
+				
+				
+
+				group = new THREE.Group();
+				group.position.y = poseup;
+				poseup ++;
+				scene.add( group );
+				createSent();
+
+				// RENDERER
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				// POSTPROCESSING
+				renderer.autoClear = true;
+				var renderModel = new THREE.RenderPass( scene, camera );
+				var width = window.innerWidth || 2;
+				var height = window.innerHeight || 2;
+				composer = new THREE.EffectComposer( renderer );
+				composer.addPass( renderModel );
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				composer.reset();
+			}
+
+		//	function createText() {
+		//		if (linum == 1) {
+		//		textGeo01 = new THREE.TextGeometry( text01 );
+		//		} else if (linum == 2) {
+        //                        textGeo01 = new THREE.TextGeometry( text02 );
+         //                       } else if (linum == 3) {
+         //                       textGeo01 = new THREE.TextGeometry( text03 );
+          //                      } else if (linum == 4) {
+           //                     textGeo01 = new THREE.TextGeometry( text04 );
+            //                    } else if (linum == 5) {
+             //                   textGeo01 = new THREE.TextGeometry( text05 );
+              //                  } else if (linum == 6) {
+               //                 textGeo01 = new THREE.TextGeometry( text06 );
+                //                } else if (linum == 7) {
+                 //               textGeo01 = new THREE.TextGeometry( text07 );
+                  //              }
+
+		//		textGeo01.computeBoundingBox();
+		//		textGeo01.computeVertexNormals();
+		//		var centerOffset = -0.5 * ( textGeo01.boundingBox.max.x - textGeo01.boundingBox.min.x );
+		//		var otherOffset = -0.5 * ( textGeo01.boundingBox.max.y - textGeo01.boundingBox.min.y );
+		//		textMesh1 = new THREE.Mesh( textGeo01, material );
+		//		textMesh1.position.x = centerOffset;
+		//		textMesh1.position.y = 0;
+		//		textMesh1.position.z = 20;
+		//		textMesh1.rotation.x = 0;
+		//		textMesh1.rotation.y = Math.PI * 2;
+		//		group.add( textMesh1 );
+		//	}
+			
+			function createSent() {
+			        var img = new THREE.MeshLambertMaterial({
+					map:THREE.ImageUtils.loadTexture('img/stars.jpg')
+					});
+
+//					var plane02 = new THREE.Mesh( new THREE.PlaneBufferGeometry( 10000, 10000 ),img);
+					var plane02 = new THREE.Mesh( new THREE.PlaneBufferGeometry( 10000, 10000 ),
+								new THREE.MeshBasicMaterial( { color: 0x000080, opacity: 0.5, transparent: true } )
+				);
+	//				new THREE.MeshBasicMaterial( { color: 0x0000FF, opacity: 0.4, transparent: true } )
+	//			);
+				plane02.position.y = -500;
+				plane02.position.x = 0;
+				plane02.position.z = -1500;
+				plane02.rotation.x = 200;
+				scene.add( plane02 );
+
+				var sphere01 = new THREE.Mesh(new THREE.SphereGeometry(2400, 200, 200), matnn );
+				sphere01.overdraw = true;
+				sphere01.position.y = 50;
+				sphere01.position.x = 0;
+				sphere01.position.z = -5000;
+				sphere01.rotation.x = 0;
+				sphere01.scale.y = 0.3;
+				
+				scene.add(sphere01);
+				
+				
+				var CustomSinCurve = THREE.Curve.create(
+					function ( scale ) { //custom curve constructor
+					this.scale = (scale === undefined) ? 1 : scale; 
+					}, 
+					
+				function ( t ) { //getPoint: t is between 0-1 
+				var tx = t * 3 - 1.5, 
+				ty = Math.sin( 1 * Math.PI * t ), 
+				tz = 0;
+				
+				return new THREE.Vector3(tx, ty, tz).multiplyScalar(this.scale);
+					}
+				); 
+
+				var path = new CustomSinCurve( 100 ); 
+				var geometry = new THREE.TubeGeometry( path, //path 
+				60, //segments 
+				15, //radius 
+				16, //radiusSegments 
+				false //closed 
+				);
+				geo001 = new THREE.Mesh( geometry, matnn );
+				geo001.position.x = -900;
+				geo001.position.y = 40;
+				geo001.position.z = -50;
+				geo001.rotation.x = 0;
+				geo001.scale.x = 14.5;
+				geo001.scale.y = 3;
+				geo001.rotation.y = Math.PI * 2;
+				geo001.rotation.x = - Math.PI * 0.2;
+
+				group.add(geo001);
+	  
+	  			geo002 = new THREE.Mesh( geometry, matnn );
+				geo002.position.x = -900;
+				geo002.position.y = 30;
+				geo002.position.z = -50;
+				geo002.rotation.x = 0;
+				geo002.scale.x = 14.5;
+				geo002.scale.y = 3;
+				geo002.rotation.y = Math.PI * 2;
+				geo002.rotation.x = - Math.PI * 1;
+	  			group.add(geo002);	  
+	  
+				textGeo01001 = new THREE.TextGeometry( text01001 );
+				textGeo01002 = new THREE.TextGeometry( text01002 );
+				textGeo01003 = new THREE.TextGeometry( text01003 );
+				textGeo01004 = new THREE.TextGeometry( text01004 );
+				textGeo01005 = new THREE.TextGeometry( text01005 );
+				textGeo01006 = new THREE.TextGeometry( text01006 );
+				textGeo01007 = new THREE.TextGeometry( text01007 );
+				textGeo01008 = new THREE.TextGeometry( text01008 );
+				textGeo01009 = new THREE.TextGeometry( text01009 );
+				textGeo01010 = new THREE.TextGeometry( text01010 );
+				textGeo01011 = new THREE.TextGeometry( text01011 );
+				textGeo01012 = new THREE.TextGeometry( text01012 );
+				textGeo01013 = new THREE.TextGeometry( text01013 );
+				textGeo01014 = new THREE.TextGeometry( text01014 );
+				textGeo01015 = new THREE.TextGeometry( text01015 );
+				textGeo01016 = new THREE.TextGeometry( text01016 );
+				textGeo01017 = new THREE.TextGeometry( text01017 );
+				textGeo01018 = new THREE.TextGeometry( text01018 );
+				textGeo01019 = new THREE.TextGeometry( text01019 );
+				textGeo01020 = new THREE.TextGeometry( text01020 );
+				textGeo01021 = new THREE.TextGeometry( text01021 );
+				textGeo01001.computeBoundingBox();
+				textGeo01002.computeBoundingBox();
+				textGeo01003.computeBoundingBox();
+				textGeo01004.computeBoundingBox();
+				textGeo01005.computeBoundingBox();
+				textGeo01006.computeBoundingBox();
+				textGeo01007.computeBoundingBox();
+				textGeo01008.computeBoundingBox();
+				textGeo01009.computeBoundingBox();
+				textGeo01010.computeBoundingBox();
+				textGeo01011.computeBoundingBox();
+				textGeo01012.computeBoundingBox();
+				textGeo01013.computeBoundingBox();
+				textGeo01014.computeBoundingBox();
+				textGeo01015.computeBoundingBox();
+				textGeo01016.computeBoundingBox();
+				textGeo01017.computeBoundingBox();
+				textGeo01018.computeBoundingBox();
+				textGeo01019.computeBoundingBox();
+				textGeo01020.computeBoundingBox();
+				textGeo01021.computeBoundingBox();
+				textGeo01001.computeVertexNormals();
+				textGeo01002.computeVertexNormals();
+				textGeo01003.computeVertexNormals();
+				textGeo01004.computeVertexNormals();
+				textGeo01005.computeVertexNormals();
+				textGeo01006.computeVertexNormals();
+				textGeo01007.computeVertexNormals();
+				textGeo01008.computeVertexNormals();
+				textGeo01009.computeVertexNormals();
+				textGeo01010.computeVertexNormals();
+				textGeo01011.computeVertexNormals();
+				textGeo01012.computeVertexNormals();
+				textGeo01013.computeVertexNormals();
+				textGeo01014.computeVertexNormals();
+				textGeo01015.computeVertexNormals();
+				textGeo01016.computeVertexNormals();
+				textGeo01017.computeVertexNormals();
+				textGeo01018.computeVertexNormals();
+				textGeo01019.computeVertexNormals();
+				textGeo01020.computeVertexNormals();
+				textGeo01021.computeVertexNormals();
+				var cO01001 = ( textGeo01001.boundingBox.max.x - textGeo01001.boundingBox.min.x );
+//				var otherOffset01001 = -0.5 * ( textGeo01001.boundingBox.max.y - textGeo01001.boundingBox.min.y );
+				var cO01002 =  ( textGeo01002.boundingBox.max.x - textGeo01002.boundingBox.min.x );
+//				var otherOffset01002 = -0.5 * ( textGeo01002.boundingBox.max.y - textGeo01002.boundingBox.min.y );
+				var cO01003 = ( textGeo01003.boundingBox.max.x - textGeo01003.boundingBox.min.x );
+//				var otherOffset01003 = -0.5 * ( textGeo01003.boundingBox.max.y - textGeo01003.boundingBox.min.y );
+				var cO01004 = ( textGeo01004.boundingBox.max.x - textGeo01004.boundingBox.min.x );
+//				var oOffset01004 = -0.5 * ( textGeo01004.boundingBox.max.y - textGeo01004.boundingBox.min.y );
+				var cO01005 = ( textGeo01005.boundingBox.max.x - textGeo01005.boundingBox.min.x );
+//				var otherOffset01005 = -0.5 * ( textGeo01005.boundingBox.max.y - textGeo01005.boundingBox.min.y );
+
+				var cO01006 = ( textGeo01006.boundingBox.max.x - textGeo01006.boundingBox.min.x );
+//				var otherOffset01006 = -0.5 * ( textGeo01006.boundingBox.max.y - textGeo01006.boundingBox.min.y );
+				var cO01007 = ( textGeo01007.boundingBox.max.x - textGeo01007.boundingBox.min.x );
+//				var otherOffset01007 = -0.5 * ( textGeo01007.boundingBox.max.y - textGeo01007.boundingBox.min.y );
+				var cO01008 = ( textGeo01008.boundingBox.max.x - textGeo01008.boundingBox.min.x );
+//				var otherOffset01008 = -0.5 * ( textGeo01008.boundingBox.max.y - textGeo01008.boundingBox.min.y );
+				var cO01009 = ( textGeo01009.boundingBox.max.x - textGeo01009.boundingBox.min.x );
+//				var otherOffset01009 = -0.5 * ( textGeo01009.boundingBox.max.y - textGeo01009.boundingBox.min.y );
+				var cO01010 = ( textGeo01010.boundingBox.max.x - textGeo01010.boundingBox.min.x );
+//				var otherOffset01010 = -0.5 * ( textGeo01010.boundingBox.max.y - textGeo01010.boundingBox.min.y );
+
+				var cO01011 = ( textGeo01011.boundingBox.max.x - textGeo01011.boundingBox.min.x );
+//				var otherOffset01011 = -0.5 * ( textGeo01011.boundingBox.max.y - textGeo01011.boundingBox.min.y );
+				var cO01012 = ( textGeo01012.boundingBox.max.x - textGeo01012.boundingBox.min.x );
+//				var otherOffset01012 = -0.5 * ( textGeo01012.boundingBox.max.y - textGeo01012.boundingBox.min.y );
+				var cO01013 = ( textGeo01013.boundingBox.max.x - textGeo01013.boundingBox.min.x );
+//				var otherOffset01013 = -0.5 * ( textGeo01013.boundingBox.max.y - textGeo01013.boundingBox.min.y );
+				var cO01014 = ( textGeo01014.boundingBox.max.x - textGeo01014.boundingBox.min.x );
+//				var otherOffset01014 = 5 * ( textGeo01014.boundingBox.max.y - textGeo01014.boundingBox.min.y );
+				var cO01015 = ( textGeo01015.boundingBox.max.x - textGeo01015.boundingBox.min.x );
+//				var otherOffset01015 = -0.5 * ( textGeo01015.boundingBox.max.y - textGeo01015.boundingBox.min.y );
+
+				var cO01016 = ( textGeo01016.boundingBox.max.x - textGeo01016.boundingBox.min.x );
+//				var otherOffset01016 = -0.5 * ( textGeo01016.boundingBox.max.y - textGeo01016.boundingBox.min.y );
+				var cO01017 = ( textGeo01017.boundingBox.max.x - textGeo01017.boundingBox.min.x );
+//				var otherOffset01017 = -0.5 * ( textGeo01017.boundingBox.max.y - textGeo01017.boundingBox.min.y );
+				var cO01018 = ( textGeo01018.boundingBox.max.x - textGeo01018.boundingBox.min.x );
+//				var otherOffset01018 = -0.5 * ( textGeo01018.boundingBox.max.y - textGeo01018.boundingBox.min.y );
+				var cO01019 = ( textGeo01019.boundingBox.max.x - textGeo01019.boundingBox.min.x );
+//				var otherOffset01019 = -0.5 * ( textGeo01019.boundingBox.max.y - textGeo01019.boundingBox.min.y );
+				var cO01020 = ( textGeo01020.boundingBox.max.x - textGeo01020.boundingBox.min.x );
+//				var otherOffset01020 = -0.5 * ( textGeo01020.boundingBox.max.y - textGeo01020.boundingBox.min.y );
+
+				var cO01021 = ( textGeo01021.boundingBox.max.x - textGeo01021.boundingBox.min.x );
+//				var otherOffset01021 = -0.5 * ( textGeo01021.boundingBox.max.y - textGeo01021.boundingBox.min.y );
+				var allO = ( cO01001 + cO01002 + cO01003 + cO01004 + cO01005 + cO01006 + cO01007 + cO01008 + cO01009 + cO01010 + cO01011 + cO01012 + cO01013 + cO01014 + cO01015 + cO01016 + cO01017 + cO01018 + cO01019  + cO01020 + cO01021 + ( spacex * 20 )) ; 
+				wposi = - ( allO / 2 );
+				textMesh01001 = new THREE.Mesh( textGeo01001, matdt );
+				textMesh01001.position.x = wposi;
+				textMesh01001.position.y = 0;
+				textMesh01001.position.z = 0;
+				textMesh01001.rotation.x = 0;
+				textMesh01001.rotation.y = Math.PI * 2;
+				group.add( textMesh01001 );
+
+				wposi= ( wposi+ spacex + cO01001 );
+				
+				textMesh01002 = new THREE.Mesh( textGeo01002, matjj );
+				textMesh01002.position.x = wposi;
+				textMesh01002.position.y = 0;
+				textMesh01002.position.z = 0;
+				textMesh01002.rotation.x = 0;
+				textMesh01002.rotation.y = Math.PI * 2;
+				group.add( textMesh01002 );
+
+				wposi= ( wposi+ spacex + cO01002 );
+
+				textMesh01003 = new THREE.Mesh( textGeo01003, matnn );
+				textMesh01003.position.x = wposi;
+				textMesh01003.position.y = 0;
+				textMesh01003.position.z = 0;
+				textMesh01003.rotation.x = 0;
+				textMesh01003.rotation.y = Math.PI * 2;
+				group.add( textMesh01003 );
+
+				wposi= ( wposi+ spacex + cO01003 );
+
+				textMesh01004 = new THREE.Mesh( textGeo01004, matin );
+				textMesh01004.position.x = wposi;
+				textMesh01004.position.y = 0;
+				textMesh01004.position.z = 0;
+				textMesh01004.rotation.x = 0;
+				textMesh01004.rotation.y = Math.PI * 2;
+				group.add( textMesh01004 );
+
+				wposi= ( wposi+ spacex + cO01004 );
+
+				textMesh01005 = new THREE.Mesh( textGeo01005, matvb );
+				textMesh01005.position.x = wposi;
+				textMesh01005.position.y = 0;
+				textMesh01005.position.z = 0;
+				textMesh01005.rotation.x = 0;
+				textMesh01005.rotation.y = Math.PI * 2;
+				group.add( textMesh01005 );
+
+				wposi= ( wposi+ spacex + cO01005 );
+
+				textMesh01006 = new THREE.Mesh( textGeo01006, matin );
+				textMesh01006.position.x = wposi;
+				textMesh01006.position.y = 0;
+				textMesh01006.position.z = 0;
+				textMesh01006.rotation.x = 0;
+				textMesh01006.rotation.y = Math.PI * 2;
+				group.add( textMesh01006 );
+
+				wposi= ( wposi+ spacex + cO01006 );
+
+				textMesh01007 = new THREE.Mesh( textGeo01007, matvb );
+				textMesh01007.position.x = wposi;
+				textMesh01007.position.y = 0;
+				textMesh01007.position.z = 0;
+				textMesh01007.rotation.x = 0;
+				textMesh01007.rotation.y = Math.PI * 2;
+				group.add( textMesh01007 );
+
+				wposi= ( wposi+ spacex + cO01007 );
+
+				textMesh01008 = new THREE.Mesh( textGeo01008, matin );
+				textMesh01008.position.x = wposi;
+				textMesh01008.position.y = 0;
+				textMesh01008.position.z = 0;
+				textMesh01008.rotation.x = 0;
+				textMesh01008.rotation.y = Math.PI * 2;
+				group.add( textMesh01008 );
+
+				wposi= ( wposi+ spacex + cO01008 );
+
+				textMesh01009 = new THREE.Mesh( textGeo01009, matdt );
+				textMesh01009.position.x = wposi;
+				textMesh01009.position.y = 0;
+				textMesh01009.position.z = 0;
+				textMesh01009.rotation.x = 0;
+				textMesh01009.rotation.y = Math.PI * 2;
+				group.add( textMesh01009 );
+
+				wposi= ( wposi+ spacex + cO01009 );
+
+				textMesh01010 = new THREE.Mesh( textGeo01010, matnn );
+				textMesh01010.position.x = wposi;
+				textMesh01010.position.y = 0;
+				textMesh01010.position.z = 0;
+				textMesh01010.rotation.x = 0;
+				textMesh01010.rotation.y = Math.PI * 2;
+				group.add( textMesh01010 );
+
+				wposi= ( wposi+ spacex + cO01010 );
+
+				textMesh01011 = new THREE.Mesh( textGeo01011, matjj );
+				textMesh01011.position.x = wposi;
+				textMesh01011.position.y = 0;
+				textMesh01011.position.z = 0;
+				textMesh01011.rotation.x = 0;
+				textMesh01011.rotation.y = Math.PI * 2;
+				group.add( textMesh01011 );
+
+				wposi= ( wposi+ spacex + cO01011 );
+
+				textMesh01012 = new THREE.Mesh( textGeo01012, matnn );
+				textMesh01012.position.x = wposi;
+				textMesh01012.position.y = 0;
+				textMesh01012.position.z = 0;
+				textMesh01012.rotation.x = 0;
+				textMesh01012.rotation.y = Math.PI * 2;
+				group.add( textMesh01012 );
+
+				wposi= ( wposi+ spacex + cO01012 );
+
+				textMesh01013 = new THREE.Mesh( textGeo01013, matvb );
+				textMesh01013.position.x = wposi;
+				textMesh01013.position.y = 0;
+				textMesh01013.position.z = 0;
+				textMesh01013.rotation.x = 0;
+				textMesh01013.rotation.y = Math.PI * 2;
+				group.add( textMesh01013 );
+
+				wposi= ( wposi+ spacex + cO01013 );
+
+				textMesh01014 = new THREE.Mesh( textGeo01014, matvb );
+				textMesh01014.position.x = wposi;
+				textMesh01014.position.y = 0;
+				textMesh01014.position.z = 0;
+				textMesh01014.rotation.x = 0;
+				textMesh01014.rotation.y = Math.PI * 2;
+				group.add( textMesh01014 );
+
+				wposi= ( wposi+ spacex + cO01014 );
+
+				textMesh01015 = new THREE.Mesh( textGeo01015, matjj );
+				textMesh01015.position.x = wposi;
+				textMesh01015.position.y = 0;
+				textMesh01015.position.z = 0;
+				textMesh01015.rotation.x = 0;
+				textMesh01015.rotation.y = Math.PI * 2;
+				group.add( textMesh01015 );
+
+				wposi= ( wposi+ spacex + cO01015 );
+
+				textMesh01016 = new THREE.Mesh( textGeo01016, matjj );
+				textMesh01016.position.x = wposi;
+				textMesh01016.position.y = 0;
+				textMesh01016.position.z = 0;
+				textMesh01016.rotation.x = 0;
+				textMesh01016.rotation.y = Math.PI * 2;
+				group.add( textMesh01016 );
+
+				wposi= ( wposi+ spacex + cO01016 );
+
+				textMesh01017 = new THREE.Mesh( textGeo01017, matnn );
+				textMesh01017.position.x = wposi;
+				textMesh01017.position.y = 0;
+				textMesh01017.position.z = 0;
+				textMesh01017.rotation.x = 0;
+				textMesh01017.rotation.y = Math.PI * 2;
+				group.add( textMesh01017 );
+
+				wposi= ( wposi+ spacex + cO01017 );
+
+				textMesh01018 = new THREE.Mesh( textGeo01018, matvb );
+				textMesh01018.position.x = wposi;
+				textMesh01018.position.y = 0;
+				textMesh01018.position.z = 0;
+				textMesh01018.rotation.x = 0;
+				textMesh01018.rotation.y = Math.PI * 2;
+				group.add( textMesh01018 );
+
+				wposi= ( wposi+ spacex + cO01018 );
+
+				textMesh01019 = new THREE.Mesh( textGeo01019, matjj );
+				textMesh01019.position.x = wposi;
+				textMesh01019.position.y = 0;
+				textMesh01019.position.z = 0;
+				textMesh01019.rotation.x = 0;
+				textMesh01019.rotation.y = Math.PI * 2;
+				group.add( textMesh01019 );
+
+				wposi= ( wposi+ spacex + cO01019 );
+
+				textMesh01020 = new THREE.Mesh( textGeo01020, matvb );
+				textMesh01020.position.x = wposi;
+				textMesh01020.position.y = 0;
+				textMesh01020.position.z = 0;
+				textMesh01020.rotation.x = 0;
+				textMesh01020.rotation.y = Math.PI * 2;
+				group.add( textMesh01020 );
+
+				wposi= ( wposi+ spacex + cO01020 );
+
+				textMesh01021 = new THREE.Mesh( textGeo01021, matno );
+				textMesh01021.position.x = wposi;
+				textMesh01021.position.y = 0;
+				textMesh01021.position.z = 0;
+				textMesh01021.rotation.x = 0;
+				textMesh01021.rotation.y = Math.PI * 2;
+				group.add( textMesh01021 );
+
+				}
+
+	//		function refreshText() {
+	//			group.remove( textMesh1 );
+	//			scene.remove( textMesh1 );
+	//			textGeo01.dispose();
+	//			createText();
+	//		}
+
+			function animate() {
+				group.position.x = ( 9000 - (poseup *60)  );
+				group.position.y = 0;
+				group.position.z = -2000;
+				requestAnimationFrame( animate );
+                                renderer.clear();
+                                renderer.render( scene, camera );
+				camera.rotation.set( 0.0, ( -0.65 +(poseup / 200) ), 0 );
+ 				if ( poseup < 240 ) {
+						poseup ++;
+						} else {
+						poseup =1;
+						if ( linum < 7 ) {
+							linum ++;
+							} else {
+							linum = 1;
+							}
+				//		refreshText();
+						}
+			}
+
+		</script><div><canvas style="width: 1822px; height: 958px;" height="958" width="1822"></canvas></div>
+
